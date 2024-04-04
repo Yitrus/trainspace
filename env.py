@@ -37,13 +37,22 @@ class Kernel():
         return (dram_access*100 / (pm_access+dram_access))
 
     def round_integer_except_highest_two_digits(self, num):
-        length_of_remainder = len(str(num)) - 2
-        if(length_of_remainder > 0):
-            highest_two_digits = int(str(num)[:2])
-            rounded_num = highest_two_digits * (10 ** length_of_remainder)
+        # num > 1
+        length_of_remainder = len(str(num)) 
+        if(length_of_remainder == 2):
+            highest_two_digits = int(str(num)[:1])
+            rounded_num = highest_two_digits * 10 
             return rounded_num
+        if(length_of_remainder > 2)
+            return 100
         else:
             return num
+
+    def round_float_except_highest_two_digits(self, num):
+        # num < 1
+        highest_two_digits = int(str(num)[2])
+        rounded_num = highest_two_digits * 0.1 
+        return rounded_num
 
     def ipc_statu(self):
         cat_code = os.popen('cat /sys/fs/cgroup/htmm/memory.stat_show').read()
@@ -52,9 +61,12 @@ class Kernel():
         # print(columns)
         if(long(columns[3]) == 0):
             return 0
-        ipc = int(long(columns[5]) / long(columns[3]))
+        ipc = float(columns[5]) / float(columns[3])
         print("ipc "+str(ipc))
-        status = self.round_integer_except_highest_two_digits(ipc)
+        if(ipc > 1):
+            status = self.round_integer_except_highest_two_digits(int(ipc))
+        if(ipc < 1):
+            status = self.round_float_except_highest_two_digits(ipc)
         return status
 
 

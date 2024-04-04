@@ -29,6 +29,6 @@ def update():
 
 if __name__ == "__main__":
     env = Kernel()
-    RL = QLearningTable(actions=list(range(env.n_actions)))
+    RL = QLearningTable(actions=list(env.action_space))
 
     update()
