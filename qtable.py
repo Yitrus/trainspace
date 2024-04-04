@@ -1,9 +1,4 @@
-"""
-qtable类的几个操作，这是代理内部要算的
 
-初始化奖励衰减0.9，选择Q值随机性0.9，学习率0.01
-
-"""
 
 import numpy as np
 import pandas as pd
@@ -18,7 +13,6 @@ class QLearningTable:
         self.q_table = pd.DataFrame(columns=self.actions, dtype=np.float64)
 
     def choose_action(self, observation):
-        # 可以将新的状态加入Qtable，那么我们提前稍微处理一下stat四舍五入一下
         self.check_state_exist(observation)
         # action selection
         if np.random.uniform() < self.epsilon:
@@ -40,6 +34,9 @@ class QLearningTable:
         else:
             q_target = r  # next state is terminal
         self.q_table.loc[s, a] += self.lr * (q_target - q_predict)  # update
+        file_path = 'data.txt'
+        self.q_table.to_csv(file_path, sep='\t', mode='a', index=False, header=False) 
+
 
     def check_state_exist(self, state):
         if state not in self.q_table.index:

@@ -1,15 +1,8 @@
-"""
-这个用于和内核交互，以及获得reward的信息所需函数
 
-"""
 import numpy as np
 import time
 import sys
 import os
-
-dram = hex(int('207fffffff', 16))
-pm_star = hex(int('2100000000', 16))
-pm_end = hex(int('9e7fffffff', 16))
 
 class Kernel():
     def __init__(self):
@@ -17,7 +10,10 @@ class Kernel():
         self.action_space = [0, 16, 64, 128, 256, 512, 1024, 2048, 4096]
         self.n_actions = len(self.action_space)
 
-    def count_value_changes(file_path):
+    def read_sample(self, file_path):
+        dram = int('207fffffff', 16)
+        pm_star = int('2100000000', 16)
+        pm_end = int('9e7fffffff', 16)
         pm_access = 0
         dram_access = 0
         qbug = 0
@@ -27,42 +23,68 @@ class Kernel():
                 columns = line.strip().split()
 
                 allt += 1
-                key = columns[0]
-                value = hex(int(columns[1], 16))
+                value = int(columns[-1], 16)
 
                 if value < dram:
-                    pm_access += 1
-                elif (value > pm_star) and (value < pm_end):
                     dram_access += 1
+                elif (value > pm_star) and (value < pm_end):
+                    pm_access += 1
                 else:
                     qbug += 1
-        print(dram_access / (pm_access+dram_access))      
-        return (dram_access / (pm_access+dram_access))
+        print(dram_access*100 / (pm_access+dram_access))
+        print(allt)
+        print(qbug)       
+        return (dram_access*100 / (pm_access+dram_access))
 
-    def reset():
-        os.system('./run.sh')
+    def round_integer_except_highest_two_digits(self, num):
+        length_of_remainder = len(str(num)) - 2
+        if(length_of_remainder > 0):
+            highest_two_digits = int(str(num)[:2])
+            rounded_num = highest_two_digits * (10 ** length_of_remainder)
+            return rounded_num
+        else:
+            return num
+
+    def ipc_statu(self):
+        cat_code = os.popen('cat /sys/fs/cgroup/htmm/memory.stat_show').read()
+        # print("reset_code "+cat_code)
+        columns = cat_code.strip().split()
+        # print(columns)
+        if(long(columns[3]) == 0):
+            return 0
+        ipc = int(long(columns[5]) / long(columns[3]))
+        print("ipc "+str(ipc))
+        status = self.round_integer_except_highest_two_digits(ipc)
+        return status
+
+
+    def reset(self):
+        # os.system('./run.sh') 
         time.sleep(10)
-        # 1.程序启动；2. DRAM占用可能还不满，先等待，判断一下；3.返回第一个状态
-        cat_code = os.popen('cat /sys/fs/cgroup/htmm/stat_show').read()
-        print("cat_code "+cat_code)
-        return cat_code
+        status = self.ipc_statu()
+        return status
 
     def step(self, action):
-        echo_code = os.system('echo'+ action*4096 +' > /sys/fs/cgroup/htmm/action_show')
-        print("echo_code "+echo_code)
-        if echo_code != 0:
-            done = True
-            return 0,0,done
+        action *= 4096
+        command = 'echo "{}" > /sys/fs/cgroup/htmm/memory.action_show'.format(str(action))
+        try:
+            echo_code = os.system(command)
+            cat_code = os.popen('cat /sys/fs/cgroup/htmm/memory.action_show').read()
+            print("action "+ str(cat_code))
+        except Exception as e:
+            print("action failed")
+        # if echo_code != 0:
+        #     done = True
+        #     return 0,0,done
 
-        time.sleep(10)
+        time.sleep(30)
+
         os.system('./reward.sh')
+        reward = self.read_sample('./main.txt') - 50
+        # print("reward "+reward)
+        os.system('rm perf.data')
+        os.system('rm main.txt')
         
-        # 调用函数并传入文件路径
-        reward = self.count_value_changes('.main.txt') - 100
-        # 1.echo action*4096; 2.操作完成后算reward；3.返回操作完成后状态
-        # 4.done指程序运行完没有
-        
-        cat_code = os.popen('cat /sys/fs/cgroup/htmm/stat_show').read()
-        print("cat_code "+cat_code)
-        return reward,cat_code,done
+        status = self.ipc_statu()
+        return status,reward
     
