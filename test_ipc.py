@@ -15,11 +15,20 @@ def round_integer_except_highest_two_digits(num):
     else:
         return num
 
-def ipc_statu(num1, num2):
+def read_statu(file_path):
+        with open(file_path, 'r') as file:
+            for line in file:
+                if "instructions" in line:
+                    columns = line.strip().split()
+                    print(columns[3])
+                    return float(columns[3])
+
+def ipc_statu():
     # cat_code = os.popen('cat /sys/fs/cgroup/htmm/memory.stat_show').read()
     # print(cat_code)
     # columns = cat_code.strip().split()
-    ipc = float(num1) / float(num2)
+    #os.system('./statu.sh')
+    ipc = read_statu('./sample.txt')
     print(ipc)
     if(ipc > 1):
         status = round_integer_except_highest_two_digits(int(ipc))
@@ -29,4 +38,4 @@ def ipc_statu(num1, num2):
     return status
 
 if __name__ == "__main__":
-    ipc_statu(13334, 23334)
+    ipc_statu()

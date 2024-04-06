@@ -7,7 +7,7 @@ import os
 class Kernel():
     def __init__(self):
         self.stat = 0
-        self.action_space = [0, 16, 64, 128, 256, 512, 1024, 2048, 4096]
+        self.action_space = [0, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]
         self.n_actions = len(self.action_space)
 
     def read_sample(self, file_path):
@@ -36,6 +36,13 @@ class Kernel():
         print(qbug)       
         return (dram_access*100 / (pm_access+dram_access))
 
+    def read_statu(self, file_path):
+        with open(file_path, 'r') as file:
+            for line in file:
+                if "instructions" in line:
+                    columns = line.strip().split()
+                    return float(columns[3])
+
     def round_integer_except_highest_two_digits(self, num):
         # num > 1
         length_of_remainder = len(str(num)) 
@@ -43,7 +50,7 @@ class Kernel():
             highest_two_digits = int(str(num)[:1])
             rounded_num = highest_two_digits * 10 
             return rounded_num
-        if(length_of_remainder > 2)
+        if(length_of_remainder > 2):
             return 100
         else:
             return num
@@ -55,20 +62,21 @@ class Kernel():
         return rounded_num
 
     def ipc_statu(self):
-        cat_code = os.popen('cat /sys/fs/cgroup/htmm/memory.stat_show').read()
+        #cat_code = os.popen('cat /sys/fs/cgroup/htmm/memory.stat_show').read()
         # print("reset_code "+cat_code)
-        columns = cat_code.strip().split()
+        #columns = cat_code.strip().split()
         # print(columns)
-        if(long(columns[3]) == 0):
-            return 0
-        ipc = float(columns[5]) / float(columns[3])
+        #if(long(columns[3]) == 0):
+        #    return 0
+        #ipc = float(columns[5]) / float(columns[3])
+        os.system('./statu.sh')
+        ipc = read_statu('./sample.txt')
         print("ipc "+str(ipc))
         if(ipc > 1):
             status = self.round_integer_except_highest_two_digits(int(ipc))
         if(ipc < 1):
             status = self.round_float_except_highest_two_digits(ipc)
         return status
-
 
     def reset(self):
         # os.system('./run.sh') 
@@ -98,5 +106,6 @@ class Kernel():
         os.system('rm main.txt')
         
         status = self.ipc_statu()
+        os.system('rm sample.txt')
         return status,reward
     

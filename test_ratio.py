@@ -23,14 +23,14 @@ def read_sample(file_path):
                 pm_access += 1
             else:
                 qbug += 1
-    print(dram_access)
-    print(pm_access)    
+    # print(dram_access)
+    # print(pm_access)    
     print(dram_access*100 / (pm_access+dram_access))  
-    print(allt)
-    print(qbug)   
+    # print(allt)
+    # print(qbug)   
     return (dram_access*100 / (pm_access+dram_access))  
 
 if __name__ == "__main__":
-    # os.system('./reward.sh')
+    os.system('./reward.sh')
     reward = read_sample('./main.txt') - 50
-    print(reward)
+    # print(reward)
