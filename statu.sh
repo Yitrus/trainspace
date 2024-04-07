@@ -1,2 +1,2 @@
-perf stat -e cpu-cycles,instructions -a --pid=$(pgrep -o -f train) -o ./sample.txt -- sleep 5
+perf stat -e cpu-cycles,instructions -a --pid=$(pgrep train) -o ./sample.txt -- sleep 5
 
