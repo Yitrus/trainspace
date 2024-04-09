@@ -35,7 +35,7 @@ class QLearningTable:
             q_target = r  # next state is terminal
         self.q_table.loc[s, a] += self.lr * (q_target - q_predict)  # update
         file_path = 'data.txt'
-        self.q_table.to_csv(file_path, sep='\t', mode='a', index=False, header=False) 
+        self.q_table.to_csv(file_path, sep='\t', index=False, header=False) # , mode='a'
 
 
     def check_state_exist(self, state):
