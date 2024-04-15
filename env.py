@@ -7,13 +7,14 @@ import os
 class Kernel():
     def __init__(self):
         self.last_stat = 50
-        self.action_space = [0, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]
+        # self.action_space = [0, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]
+        self.action_space = [0, 512, 1024, 2048, 4096]
         self.n_actions = len(self.action_space)
 
     def read_sample(self, file_path):
         dram = int('207fffffff', 16)
-        pm_star = int('2100000000', 16)
-        pm_end = int('9e7fffffff', 16)
+        pm_star = int('2080000000', 16)
+        pm_end = int('11c7fffffff', 16)
         pm_access = 0
         dram_access = 0
         qbug = 0
@@ -38,7 +39,8 @@ class Kernel():
         print(qbug)       
         print(dram_access)
         print(pm_access)
-        return (dram_access*100 / (pm_access+dram_access))
+        # make status /10, short status range
+        return (dram_access*10 / (pm_access+dram_access))
 
     def reset(self):
         os.system('./reward.sh')
