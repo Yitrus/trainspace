@@ -1,5 +1,6 @@
 from env import Kernel
 from qtable import QLearningTable
+import time
 
 def update():
     # for episode in range(100):
@@ -17,6 +18,7 @@ def update():
             #     break
 
 if __name__ == "__main__":
+    # time.sleep(30)
     env = Kernel()
     RL = QLearningTable(actions=list(env.action_space))
     update()

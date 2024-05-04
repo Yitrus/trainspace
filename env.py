@@ -20,10 +20,15 @@ class Kernel():
         while True:
             cat_code = os.popen('cat /sys/fs/cgroup/htmm/memory.hit_ratio_show').read()
             numbers = cat_code.split()
-            print("ratio " + numbers[0])
-            print("others " + numbers[1])
-            print("dram " + numbers[2])
-            print("pm " + numbers[3])
+            # print("ratio " + numbers[0])
+            # print("others " + numbers[1])
+            # print("dram " + numbers[2])
+            # print("pm " + numbers[3])
+            with open("change23hugeV30.txt", "a") as file:
+                file.write("ratio " + str(numbers[0]) + "\n")
+                file.write("others " + str(numbers[1]) + "\n")
+                file.write("dram " + str(numbers[2]) + "\n")
+                file.write("pm " + str(numbers[3]) + "\n")
             if int(numbers[2]) == 0 and int(numbers[3]) == 0:
                 time.sleep(10)
             else:
@@ -46,7 +51,7 @@ class Kernel():
         except Exception as e:
             print("action failed")
 
-        time.sleep(10)
+        time.sleep(20)
 
         status = self.read_sample()
         reward = status - self.last_stat
