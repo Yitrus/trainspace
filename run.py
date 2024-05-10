@@ -18,7 +18,7 @@ def update():
             #     break
 
 if __name__ == "__main__":
-    # time.sleep(30)
+    time.sleep(30)
     env = Kernel()
     RL = QLearningTable(actions=list(env.action_space))
     update()

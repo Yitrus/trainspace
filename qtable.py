@@ -10,11 +10,14 @@ class QLearningTable:
         self.lr = learning_rate
         self.gamma = reward_decay
         self.epsilon = e_greedy
-        self.q_table = pd.DataFrame(columns=self.actions, dtype=np.float64)
-        # self.q_table = pd.read_csv('./data.txt', sep='\s+', dtype=np.float64)
+        if os.path.exists('./data.txt'):
+            self.q_table = pd.read_csv('./data.txt', sep='\s+', dtype=np.float64)
+        else:
+            self.q_table = pd.DataFrame(columns=self.actions, dtype=np.float64, index=range(12))
+        
 
     def choose_action(self, observation):
-        self.check_state_exist(observation)
+        # self.check_state_exist(observation)
         # action selection
         if np.random.uniform() < self.epsilon:
             # choose best action
@@ -28,7 +31,7 @@ class QLearningTable:
 
     #
     def learn(self, s, a, r, s_):
-        self.check_state_exist(s_)
+        # self.check_state_exist(s_)
         q_predict = self.q_table.loc[s, a]
         if s_ != 'terminal':
             q_target = r + self.gamma * self.q_table.loc[s_, :].max()  # next state is not terminal
@@ -39,13 +42,13 @@ class QLearningTable:
         self.q_table.to_csv(file_path, sep='\t', index=False, header=False) # , mode='a'
 
 
-    def check_state_exist(self, state):
-        if state not in self.q_table.index:
-            # append new state to q table
-            self.q_table = self.q_table.append(
-                pd.Series(
-                    [0]*len(self.actions),
-                    index=self.q_table.columns,
-                    name=state,
-                )
-            )
+    # def check_state_exist(self, state):
+    #     if state not in self.q_table.index:
+    #         # append new state to q table
+    #         self.q_table = self.q_table.append(
+    #             pd.Series(
+    #                 [0]*len(self.actions),
+    #                 index=self.q_table.columns,
+    #                 name=state,
+    #             )
+    #         )

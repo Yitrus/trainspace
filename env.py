@@ -7,12 +7,8 @@ import os
 class Kernel():
     def __init__(self):
         self.last_stat = 10
-        # self.action_space = [0, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]
-        # basic page also should try migrate more
-        # self.action_space = [8192, 16384, 32768, 65536, 131072, 262144]
-        
-        # below are huge page
-        # self.action_space = [0, 4096, 8192, 16384, 32768, 65536, 131072]
+        self.last_pm = 0
+        self.last_dram = 0
         self.action_space = [0, 16384, 32768, 65536, 131072, 262144]
         self.n_actions = len(self.action_space)
 
@@ -20,19 +16,27 @@ class Kernel():
         while True:
             cat_code = os.popen('cat /sys/fs/cgroup/htmm/memory.hit_ratio_show').read()
             numbers = cat_code.split()
-            # print("ratio " + numbers[0])
-            # print("others " + numbers[1])
-            # print("dram " + numbers[2])
-            # print("pm " + numbers[3])
-            with open("change23hugeV30.txt", "a") as file:
-                file.write("ratio " + str(numbers[0]) + "\n")
-                file.write("others " + str(numbers[1]) + "\n")
-                file.write("dram " + str(numbers[2]) + "\n")
-                file.write("pm " + str(numbers[3]) + "\n")
-            if int(numbers[2]) == 0 and int(numbers[3]) == 0:
-                time.sleep(10)
+            thisdram = int(numbers[0])
+            thispm = int(numbers[1])
+            truedram = thisdram - self.last_dram
+            truepm = thispm - self.last_pm
+            self.last_dram = thisdram
+            self.last_pm = thispm
+            print("dram " + str(truedram) + "\n")
+            print("pm " + str(truepm) + "\n")
+            #with open("change23hugeV36.txt", "a") as file:
+                # file.write("ratio " + str(numbers[0]) + "\n")
+                # file.write("others " + str(numbers[1]) + "\n")
+                # file.write("dram " + str(numbers[2]) + "\n")
+                # file.write("pm " + str(numbers[3]) + "\n")
+                # file.write("dram " + str(truedram) + "\n")
+                # file.write("pm " + str(truepm) + "\n")
+            if truedram == 0 and truepm == 0:
+                return 11
             else:
-                return int(numbers[0])/10
+                hitratio = (truedram*100)/(truedram+truepm)
+                print("hitratio "+ str(hitratio))
+                return hitratio/10
 
     def reset(self):
         status = self.read_sample()
