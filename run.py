@@ -6,10 +6,10 @@ def update():
     # for episode in range(100):
         observation = env.reset()
         while True:
-            action = RL.choose_action(str(observation))
+            action = RL.choose_action(observation)
             observation_, reward = env.step(action)
 
-            RL.learn(str(observation), action, reward, str(observation_))
+            RL.learn(observation, action, reward, observation_)
 
             observation = observation_
 
@@ -18,7 +18,7 @@ def update():
             #     break
 
 if __name__ == "__main__":
-    time.sleep(30)
+    # time.sleep(30)
     env = Kernel()
     RL = QLearningTable(actions=list(env.action_space))
     update()

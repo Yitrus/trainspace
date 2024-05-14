@@ -2,6 +2,7 @@
 
 import numpy as np
 import pandas as pd
+import os
 
 
 class QLearningTable:
@@ -14,6 +15,7 @@ class QLearningTable:
             self.q_table = pd.read_csv('./data.txt', sep='\s+', dtype=np.float64)
         else:
             self.q_table = pd.DataFrame(columns=self.actions, dtype=np.float64, index=range(12))
+            self.q_table = self.q_table.fillna(0)
         
 
     def choose_action(self, observation):
@@ -21,6 +23,8 @@ class QLearningTable:
         # action selection
         if np.random.uniform() < self.epsilon:
             # choose best action
+            # print(self.q_table.index)
+            # print("observation "+ str(observation))
             state_action = self.q_table.loc[observation, :]
             # some actions may have the same value, randomly choose on in these actions
             action = np.random.choice(state_action[state_action == np.max(state_action)].index)
@@ -32,6 +36,9 @@ class QLearningTable:
     #
     def learn(self, s, a, r, s_):
         # self.check_state_exist(s_)
+        # print(self.q_table.index)
+        # print("a "+ str(a))
+        # print("s "+ str(s))
         q_predict = self.q_table.loc[s, a]
         if s_ != 'terminal':
             q_target = r + self.gamma * self.q_table.loc[s_, :].max()  # next state is not terminal

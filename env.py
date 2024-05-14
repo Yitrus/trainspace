@@ -9,7 +9,7 @@ class Kernel():
         self.last_stat = 10
         self.last_pm = 0
         self.last_dram = 0
-        self.action_space = [0, 16384, 32768, 65536, 131072, 262144]
+        self.action_space = [131072, 262144, 524288, 1048576, 2097152, 4194304]
         self.n_actions = len(self.action_space)
 
     def read_sample(self):
@@ -22,8 +22,8 @@ class Kernel():
             truepm = thispm - self.last_pm
             self.last_dram = thisdram
             self.last_pm = thispm
-            print("dram " + str(truedram) + "\n")
-            print("pm " + str(truepm) + "\n")
+            print("dram " + str(truedram))
+            print("pm " + str(truepm))
             #with open("change23hugeV36.txt", "a") as file:
                 # file.write("ratio " + str(numbers[0]) + "\n")
                 # file.write("others " + str(numbers[1]) + "\n")
