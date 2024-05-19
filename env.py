@@ -9,7 +9,7 @@ class Kernel():
         self.last_stat = 10
         self.last_pm = 0
         self.last_dram = 0
-        self.action_space = [131072, 262144, 524288, 1048576, 2097152, 4194304]
+        self.action_space = [0, 16384, 32768, 65536, 131072, 262144]
         self.n_actions = len(self.action_space)
 
     def read_sample(self):

@@ -3,22 +3,15 @@ from qtable import QLearningTable
 import time
 
 def update():
-    # for episode in range(100):
-        observation = env.reset()
-        while True:
-            action = RL.choose_action(observation)
-            observation_, reward = env.step(action)
-
-            RL.learn(observation, action, reward, observation_)
-
-            observation = observation_
-
-            # break while loop when end of this episode
-            # if done:
-            #     break
+    observation = env.reset()
+    while True:
+        action = RL.choose_action(observation)
+        observation_, reward = env.step(action)
+        RL.learn(observation, action, reward, observation_)
+        observation = observation_
 
 if __name__ == "__main__":
-    # time.sleep(30)
+    time.sleep(20)
     env = Kernel()
     RL = QLearningTable(actions=list(env.action_space))
     update()
