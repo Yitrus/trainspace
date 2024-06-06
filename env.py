@@ -22,8 +22,8 @@ class Kernel():
             truepm = thispm - self.last_pm
             self.last_dram = thisdram
             self.last_pm = thispm
-            print("dram " + str(truedram))
-            print("pm " + str(truepm))
+            # print("dram " + str(truedram))
+            # print("pm " + str(truepm))
             #with open("change23hugeV36.txt", "a") as file:
                 # file.write("ratio " + str(numbers[0]) + "\n")
                 # file.write("others " + str(numbers[1]) + "\n")
@@ -36,7 +36,7 @@ class Kernel():
             else:
                 hitratio = (truedram*100)/(truedram+truepm)
                 print("hitratio "+ str(hitratio))
-                return hitratio/10
+                return int(hitratio/10)
 
     def reset(self):
         status = self.read_sample()
@@ -55,11 +55,14 @@ class Kernel():
         except Exception as e:
             print("action failed")
 
-        time.sleep(20)
+        time.sleep(15)
 
         status = self.read_sample()
-        reward = status - self.last_stat
-        print("reward " + str(reward))
+        if(status == 11):
+            reward = 0
+        else:
+            reward = status - self.last_stat
+        # print("reward " + str(reward))
         self.last_stat = status
         
         return status,reward

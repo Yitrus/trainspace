@@ -32,5 +32,5 @@ def read_sample(file_path):
 
 if __name__ == "__main__":
     os.system('./reward.sh')
-    reward = read_sample('./main.txt') - 50
+    reward = read_sample('./main.txt') 
     # print(reward)

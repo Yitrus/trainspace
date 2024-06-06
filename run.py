@@ -11,7 +11,7 @@ def update():
         observation = observation_
 
 if __name__ == "__main__":
-    time.sleep(20)
+    time.sleep(10)
     env = Kernel()
     RL = QLearningTable(actions=list(env.action_space))
     update()
