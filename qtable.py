@@ -13,7 +13,7 @@ class QLearningTable:
             self.q_table.columns = [str(a) for a in actions]
             self.q_table.index = pd.Index(range(12))
         else:
-            self.q_table = pd.DataFrame(columns=self.actions, dtype=np.float64, index=range(12))
+            self.q_table = pd.DataFrame(columns=[str(a) for a in actions], dtype=np.float64, index=range(12))
             self.q_table = self.q_table.fillna(0)
 
 
