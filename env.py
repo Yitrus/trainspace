@@ -1,4 +1,4 @@
-
+#coding:utf-8
 import numpy as np
 import time
 import sys
@@ -6,11 +6,10 @@ import os
 
 class Kernel():
     def __init__(self):
-        self.last_stat = 10
         self.last_pm = 0
         self.last_dram = 0
-        # self.action_space = [0, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576]
-        self.action_space = [0, 65536, 131072, 262144, 524288, 1048576]
+        # 从8个2M页面算起到迁移1024个2MB页面
+        self.action_space = [0, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288]
         self.n_actions = len(self.action_space)
 
     def read_sample(self):
@@ -23,16 +22,10 @@ class Kernel():
             truepm = thispm - self.last_pm
             self.last_dram = thisdram
             self.last_pm = thispm
-            # print("dram " + str(truedram))
-            # print("pm " + str(truepm))
-            #with open("change23hugeV36.txt", "a") as file:
-                # file.write("ratio " + str(numbers[0]) + "\n")
-                # file.write("others " + str(numbers[1]) + "\n")
-                # file.write("dram " + str(numbers[2]) + "\n")
-                # file.write("pm " + str(numbers[3]) + "\n")
-                # file.write("dram " + str(truedram) + "\n")
-                # file.write("pm " + str(truepm) + "\n")
+            # 这里是累加的采样计数，因为每核一个线程，原子计数
+            # 当两者都为0表示没有采样到或者几乎都缓存命中了（概率很小），返回特殊状态11
             if truedram == 0 and truepm == 0:
+                print("hitratio 11")
                 return 11
             else:
                 hitratio = (truedram*100)/(truedram+truepm)
@@ -41,7 +34,6 @@ class Kernel():
 
     def reset(self):
         status = self.read_sample()
-        self.last_stat = status
         return status
 
     def step(self, action):
@@ -62,9 +54,8 @@ class Kernel():
         if(status == 11):
             reward = 0
         else:
-            reward = status - self.last_stat
-        # print("reward " + str(reward))
-        self.last_stat = status
+            reward = status - 9 
+        print("reward " + str(reward))
         
         return status,reward
     
