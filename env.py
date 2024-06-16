@@ -39,16 +39,17 @@ class Kernel():
     def step(self, action):
         if action==0:
             pass
-        action *= 4096
-        command = 'echo "{}" > /sys/fs/cgroup/htmm/memory.action_show'.format(str(action))
-        try:
-            echo_code = os.system(command)
-            cat_code = os.popen('cat /sys/fs/cgroup/htmm/memory.action_show').read()
-            print("action "+ str(cat_code))
-        except Exception as e:
-            print("action failed")
+        else:
+            action *= 4096
+            command = 'echo "{}" > /sys/fs/cgroup/htmm/memory.action_show'.format(str(action))
+            try:
+                echo_code = os.system(command)
+                cat_code = os.popen('cat /sys/fs/cgroup/htmm/memory.action_show').read()
+                print("action "+ str(cat_code))
+            except Exception as e:
+                print("action failed")
 
-        time.sleep(10)
+        time.sleep(5)
 
         status = self.read_sample()
         if(status == 11):

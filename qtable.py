@@ -4,7 +4,7 @@ import pandas as pd
 import os
 
 class QLearningTable:
-    def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.6):
+    def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.7):
         self.actions = actions  # a list
         self.lr = learning_rate
         self.gamma = reward_decay
@@ -20,6 +20,7 @@ class QLearningTable:
 
     def choose_action(self, observation):
         # action selection
+        # 要不要加上如果状态是11，action就是0，或者直接跳过去下一轮?
         if np.random.uniform() < self.epsilon:
             # choose best action
             state_action = self.q_table.loc[observation, :]
