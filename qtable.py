@@ -12,9 +12,13 @@ class QLearningTable:
         if os.path.exists('./data.txt'):
             self.q_table = pd.read_csv('./data.txt', sep='\s+', header=None, dtype=np.float64)
             self.q_table.columns = [str(a) for a in actions]
-            self.q_table.index = pd.Index(range(12))
+            self.q_table.index = pd.Index(range(12)) # k=10或者20可以这么搞
+            # self.q_table.index = pd.Index(range(21))
+            # self.q_table.index = pd.Index(range(101))
         else:
-            self.q_table = pd.DataFrame(columns=[str(a) for a in actions], dtype=np.float64, index=range(12))
+            self.q_table = pd.DataFrame(columns=[str(a) for a in actions], dtype=np.float64, index=range(12)) # k=10或者20可以这么搞
+            # self.q_table = pd.DataFrame(columns=[str(a) for a in actions], dtype=np.float64, index=range(21))
+            # self.q_table = pd.DataFrame(columns=[str(a) for a in actions], dtype=np.float64, index=range(101))
             self.q_table = self.q_table.fillna(0)
 
 
