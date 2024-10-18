@@ -33,6 +33,8 @@ class QLearningTable:
         else:
             # choose random action
             action = np.random.choice(self.actions)
+        with open("/home/ssd/yi/mgaction_rebuttal_1015_d1.txt.txt", "a") as file:
+                    file.write(str(action) + "\n")
         return action
 
     #
