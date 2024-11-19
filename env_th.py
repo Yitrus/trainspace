@@ -10,7 +10,7 @@ class Kernel():
         self.last_dram = 0
         self.last_add = 0
         self.last_cyc = 0
-        self.action_space = [0, 1, -1]
+        self.action_space = [0, 1, -1, -2, 2, -4, 4]
         self.n_actions = len(self.action_space)
 
     def read_sample(self):
@@ -26,15 +26,15 @@ class Kernel():
             # 这里是累加的采样计数，因为每核一个线程，原子计数
             # 当两者都为0表示没有采样到或者几乎都缓存命中了（概率很小），返回特殊状态11
             if truedram == 0 and truepm == 0:
-                print("hitratio 11")
+                # print("hitratio 11")
                 return 11
             else:
                 hitratio = (truedram*100)/(truedram+truepm)
-                print("hitratio "+ str(hitratio))
-                with open("/home/ssd/yi/hit_ratio/rebuttal_1015_d1.txt", "a") as file:
-                    file.write(str(hitratio) + "\n")
+                # print("hitratio "+ str(hitratio))
+                # with open("/home/ssd/yi/hit_ratio/rebuttal_1015_d1.txt", "a") as file:
+                #     file.write(str(cat_code) + "\n")
                 return int(hitratio/10)
-            
+
     # def get_pending(self):
     #     try:
     #         with open('/home/ssd/yi/test_perf/count.txt', 'r') as file:
@@ -62,8 +62,8 @@ class Kernel():
     #         self.last_add = this_add
     #         reward = self.last_cyc - this_cyc # last_dram指上一次延迟的周期数
     #         self.last_cyc = this_cyc
-
-    #         return int(reward/1000) 
+    #         #  -[(两次访问pending数差距)/10^6-1] 
+    #         return int(-reward/1000000+1) 
         
     # def lat0(self):
     #     while True:
@@ -105,12 +105,13 @@ class Kernel():
         time.sleep(5)
 
         status = self.read_sample()
+        # reward = self.lat()
         if(status == 11):
             reward = 0
         else:
             # reward = self.lat0()
             reward = status - 9
-        print("reward " + str(reward))
+        # print("reward " + str(reward))
         
         return status,reward
     

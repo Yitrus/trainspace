@@ -29,8 +29,11 @@ class QLearningTable:
         else:
             # choose random action
             action = np.random.choice(self.actions)
-        with open("/home/ssd/yi/thaction_rebuttal_1015_d1.txt", "a") as file:
-                    file.write(str(action) + "\n")
+        cat_code = os.popen('cat /sys/fs/cgroup/htmm/memory.rl_threshold').read()
+        numbers = cat_code.split()
+        th = str(int(numbers[0]))
+        with open("/home/ssd/yi/thaction.txt", "a") as file:
+                    file.write(th + "\n")
         return action
 
     #

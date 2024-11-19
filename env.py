@@ -30,9 +30,9 @@ class Kernel():
                 return 11
             else:
                 hitratio = (truedram*100)/(truedram+truepm)
-                print("hitratio "+ str(hitratio))
-                with open("/home/ssd/yi/hit_ratio/rebuttal_1015_d1.txt", "a") as file:
-                    file.write(str(hitratio) + "\n")
+                # print("hitratio "+ str(hitratio))
+                # with open("/home/ssd/yi/rebuttal_1015_d1.txt", "a") as file:
+                #     file.write(str(hitratio) + "\n")
                 return int(hitratio/10)  # magic number k
 
     # def get_pending(self):
